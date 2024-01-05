@@ -19,7 +19,7 @@ export class UsersResolver {
       throw new BadRequestException('Please fill in all the fields');
     }
 
-    const user = await this.userService.register(registerDto, context.res);
+    const { user } = await this.userService.register(registerDto, context.res);
 
     return { user };
   }
