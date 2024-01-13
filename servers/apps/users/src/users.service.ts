@@ -51,10 +51,14 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = {
+      id: 0, // temporarily 0 until account is activated
       name,
       email,
       password: hashedPassword,
       phone_number,
+      role: 'Unactivated User',
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     const activationToken = await this.createActivationToken(user);
