@@ -1,5 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 @InputType()
 export class RegisterDto {
@@ -22,8 +28,20 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Phone number is required.' })
   phone_number: number;
 
+  @Field({ nullable: true })
+  @IsOptional()
+  address?: string;
+}
+
+@InputType()
+export class ActivationDto {
   @Field()
-  address: string;
+  @IsNotEmpty({ message: 'Activation Token is required.' })
+  activationToken: string;
+
+  @Field()
+  @IsNotEmpty({ message: 'Activation Code is required.' })
+  activationCode: string;
 }
 
 @InputType()
