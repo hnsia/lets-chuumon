@@ -31,7 +31,7 @@ export class ActivationResponse {
 @ObjectType()
 export class LoginResponse {
   @Field(() => User, { nullable: true })
-  user: User;
+  user?: User | any;
 
   @Field({ nullable: true })
   accessToken: string;
