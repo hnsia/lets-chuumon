@@ -1,11 +1,13 @@
 import styles from "@/src/utils/style";
 import React from "react";
+import NavItems from "../NavItems";
 
 const Header = () => {
   return (
-    <header className="w-full h-[80px] bg-[#0F1524] flex items-center justify-between">
-      <div className="w-[90%] m-auto text-white">
+    <header className="w-full bg-[#0F1524] ">
+      <div className="w-[90%] m-auto h-[80px]  text-white flex items-center justify-between">
         <h1 className={`${styles.logo}`}>Let&apos;s Chuumon</h1>
+        <NavItems />
       </div>
     </header>
   );
