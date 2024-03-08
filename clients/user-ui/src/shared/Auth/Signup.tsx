@@ -1,7 +1,10 @@
+import { REGISTER_USER } from "@/src/graphql/actions/register.action";
 import styles from "@/src/utils/style";
+import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import {
   AiFillGithub,
   AiOutlineEye,
@@ -22,6 +25,8 @@ const formSchema = z.object({
 type SignupSchema = z.infer<typeof formSchema>;
 
 function Signup({ setActiveState }: { setActiveState: (e: string) => void }) {
+  const [registerUserMutation, { loading, error, data }] =
+    useMutation(REGISTER_USER);
   const {
     register,
     handleSubmit,
@@ -32,9 +37,17 @@ function Signup({ setActiveState }: { setActiveState: (e: string) => void }) {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: SignupSchema) => {
-    console.log(data);
-    reset();
+  const onSubmit = async (data: SignupSchema) => {
+    try {
+      const response = await registerUserMutation({
+        variables: data,
+      });
+      localStorage.setItem("activation_token", response.data.activation_token);
+      toast.success("Success, check mail!");
+      reset();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -70,7 +83,7 @@ function Signup({ setActiveState }: { setActiveState: (e: string) => void }) {
         <div className="w-full mt-5 relative mb-1">
           <label className={`${styles.label}`}>Enter your phone number</label>
           <input
-            {...register("phone_number")}
+            {...register("phone_number", { valueAsNumber: true })}
             type="number"
             placeholder="+60123456789"
             className={`${styles.input}`}
@@ -90,9 +103,7 @@ function Signup({ setActiveState }: { setActiveState: (e: string) => void }) {
             placeholder="********"
             className={`${styles.input}`}
           />
-          {errors.password && (
-            <span className="text-red-500 block mt-1">{`${errors.password.message}`}</span>
-          )}
+
           {!showPassword ? (
             <AiOutlineEyeInvisible
               className="absolute bottom-3 right-2 z-1 cursor-pointer"
@@ -108,11 +119,15 @@ function Signup({ setActiveState }: { setActiveState: (e: string) => void }) {
           )}
         </div>
 
+        {errors.password && (
+          <span className="text-red-500 block mt-1">{`${errors.password.message}`}</span>
+        )}
+
         <div className="w-full mt-5">
           <input
             type="submit"
             value="Sign Up"
-            disabled={isSubmitting}
+            disabled={isSubmitting || loading}
             className={`${styles.button} mt-3`}
           />
         </div>
